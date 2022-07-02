@@ -1,3 +1,6 @@
+# !python -m pip install -U pip
+# !python -m pip install -U scikit-image
+
 import torch
 from skimage.filters import gaussian
 
