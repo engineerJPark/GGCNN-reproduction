@@ -16,7 +16,7 @@ import tensorboardX
 from ggcnn import get_network
 from ggcnn.gaussian_filter import gaussian_filtering
 
-from utils.preprocessing import evaluation
+from utils.processing import evaluation
 from utils.data import get_dataset
 
 # visualization tool 사용
@@ -24,7 +24,7 @@ from utils.data import get_dataset
 logging.basicConfig(level=logging.INFO)
 
 
-if __name__ = '__main__':
+if __name__ == '__main__':
     pass
     # run()
 

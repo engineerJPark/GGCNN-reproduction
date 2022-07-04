@@ -6,7 +6,7 @@ import random
 
 import os
 import glob
-from utils.preprocessing import grasp, image
+from utils.processing import grasp, image
 
 # !pip install kaggle --upgrade
 # !kaggle -h
