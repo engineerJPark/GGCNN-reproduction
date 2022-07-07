@@ -163,7 +163,7 @@ class DepthImage(Image):
         Inpanint missing value / invalid value in depth image
         missin_value : value to fill in teh depth image
         '''
-        self.img = cv2.copyMakeBorder(self.img, 1, 1, 1, 1, cv2.BORDER_DEFAULT)
+        self.img = cv2.copyMakeBorder(self.img, 1, 1, 1, 1, cv2.BORDER_DEFAULT) # get original image
         mask = (self.img == missing_value).astype(np.uint8) # invalid pixel dtect
         
         # scale to keep as float, but has to be in bounds -1 to 1
@@ -189,23 +189,24 @@ class DepthImage(Image):
         '''
         Normalise by subtracting the mean and clippint [-1,1]
         '''
-        self.img = np.clip((self.img - self.img.mean()), -1,)
-
+        self.img = np.clip((self.img - self.img.mean()), -1, 1)
 
 class WidthImage(Image):
-    """
+    '''
     A width image is one that describes the desired gripper width at each pixel.
-    """
+    '''
     def zoom(self, factor):
-        """
-        "Zoom" the image by cropping and resizing.  Also scales the width accordingly.
-        :param factor: Factor to zoom by. e.g. 0.5 will keep the center 50% of the image.
-        """
+        '''
+        "Zoom" the image by cropping and resizing. Also scales the width accordingly.
+        factor: Factor to zoom by. e.g. 0.5 will keep the center 50% of the image.
+        '''
         super().zoom(factor)
-        self.img = self.img/factor
+        self.img = self.img/factor # scale down the width by 'factor'
 
     def normalise(self):
-        """
+        '''
         Normalise by mapping [0, 150] -> [0, 1]
-        """
+        '''
         self.img = np.clip(self.img, 0, 150.0)/150.0
+
+ 
