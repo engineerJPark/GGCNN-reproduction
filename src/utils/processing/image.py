@@ -164,9 +164,9 @@ class DepthImage(Image):
         missin_value : value to fill in teh depth image
         '''
         self.img = cv2.copyMakeBorder(self.img, 1, 1, 1, 1, cv2.BORDER_DEFAULT)
-        mask = (self.img == missing_value).astype(np.uint8)
+        mask = (self.img == missing_value).astype(np.uint8) # invalid pixel dtect
         
-        # scale to keep as float, bus has to be in bounds -1 to 1
+        # scale to keep as float, but has to be in bounds -1 to 1
         scale = np.abs(self.img).max()
         self.img = self.img.astype(np.float32) / scale
         self.img = cv2.inpaint(self.img, mask, 1, cv2.INPAINT_NS)
