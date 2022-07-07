@@ -124,7 +124,7 @@ class GraspDatasetBase(torch.utils.data.Dataset):
 class CornellDataset(GraspDatasetBase):
     '''
     Getting CornellDataset
-    file_path is used to be '~/catkin_ws/src/cornell'
+    file_path is used to be '~/catkin_ws/cornell'
     '''
 
     def __init__(self, file_path, start=0., end=1., ds_rotate=0, **kwargs):
