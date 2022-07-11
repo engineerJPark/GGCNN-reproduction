@@ -139,9 +139,9 @@ class GraspRectangles:
         pad_to: Length to 0-pad the array along the first dimension
         return Nx4x2 numpy array
         '''
-        a = np.stack([gr.points for gr in self.grs])
+        a = np.stack([gr.points for gr in self.grs]) # axis 0 = len(self.grs)
         if pad_to and pad_to > len(self.grs):
-            a = np.concatenate((a, np.zeros((pad_to - len(self.grs), 4, 2))))
+            a = np.concatenate((a, np.zeros((pad_to - len(self.grs), 4, 2)))) # axis = 0
         return a.astype(np.int32)
 
     @property
@@ -150,8 +150,8 @@ class GraspRectangles:
         Compute mean center of all GraspRectangles
         return: float, mean centre of all GraspRectangles
         '''
-        points = [gr.points for gr in self.grs]
-        return np.mean(np.vstack(points), axis=0).astype(np.int32)
+        return np.mean(np.vstack([gr.points for gr in self.grs]),\
+             axis=0).astype(np.int32)
 
 class GraspRectangle:
     '''
@@ -162,9 +162,6 @@ class GraspRectangle:
 
     def __str__(self):
         return str(self.points)
-
-    
-
 
 
 class Grasp:
