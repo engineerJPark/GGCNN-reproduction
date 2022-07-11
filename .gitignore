@@ -162,3 +162,4 @@ cython_debug/
 cornell/
 test.py
 ggcnn_colab.ipynb
+.knowledge.md

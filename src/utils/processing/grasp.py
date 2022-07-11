@@ -1,3 +1,4 @@
+from re import X
 import numpy as np
 import matplotlib.pyplot as plt
 from skimage.draw import polygon
@@ -83,31 +84,86 @@ class GraspRectangles:
         return cls(grs)
 
     def append(self, gr):
-        pass
+        '''
+        Add a grasp rectangle to this GraspRectangles object
+        gr: GraspRectangle
+        '''
+        self.grs.append(gr)
 
     def copy(self):
-        pass
+        '''
+        return: A deep copy of this object and all of its GraspRectangles.
+        '''
+        new_grs = GraspRectangles()
+        for gr in self.grs:
+            new_grs.append(gr.copy())
+        return new_grs
 
     def show(self, ax=None, shape=None):
-        pass
+        '''
+        Draw all GraspRectangles on a matplotlib plot.
+        ax: (optional) existing axis
+        shape: (optional) Plot shape if no existing axis
+        '''
+        if ax is None:
+            f = plt.figure()
+            ax = f.add_subplot(1,1,1)
+            ax.imshow(np.zeros[shape])
+            ax.axis([0, shape[1], shape[0], 0]) # x축 최소최대, y축 최소최대
+            self.plot(ax)
+            plt.show()
+        else:
+            self.plot(ax)
 
-    def draq(self, shape, position=True, angle=True, width=True):
-        pass
+    def draw(self, shape, position=True, angle=True, width=True):
+        '''        
+        Plot all GraspRectangles as solid rectangles in a numpy array, e.g. as network training data.
+        shape: output shape
+        return: Q, Angle, Width outputs (or None)
+        '''
+        pos_out = np.zeros(shape) if position else None
+        ang_out = np.zeros(shape) if angle else None
+        width_out = np.zeros(shape) if width else None
+
+        for gr in self.grs:
+            rr, cc = gr.compact_polygon_coords(shape)
+            if position: pos_out[rr, cc] = 1.
+            if angle: ang_out[rr, cc] = gr.angle
+            if width: width_out[rr, cc] = gr.length
+
+        return pos_out, ang_out, width_out
 
     def to_array(self, pad_to=0):
-        pass
+        '''
+        Convert all GraspRectangles to a single array.
+        pad_to: Length to 0-pad the array along the first dimension
+        return Nx4x2 numpy array
+        '''
+        a = np.stack([gr.points for gr in self.grs])
+        if pad_to and pad_to > len(self.grs):
+            a = np.concatenate((a, np.zeros((pad_to - len(self.grs), 4, 2))))
+        return a.astype(np.int32)
 
     @property
     def center(self):
-        pass
+        '''
+        Compute mean center of all GraspRectangles
+        return: float, mean centre of all GraspRectangles
+        '''
+        points = [gr.points for gr in self.grs]
+        return np.mean(np.vstack(points), axis=0).astype(np.int32)
 
 class GraspRectangle:
     '''
     representation of a grasp in the common 'Grasp Rectangle format'
     '''
-    def __init__(self, ):
-        pass
-    pass
+    def __init__(self, points):
+        self.points = points
+
+    def __str__(self):
+        return str(self.points)
+
+    
 
 
 
@@ -125,7 +181,7 @@ def detect_grasps(q_img, ang_img, width_img=None, no_grasp=1):
     no_grasps: Max number of grasps to return
     return: list of Grasps
     '''
-    local_max = peak_local_max(q_img, min_distance=20, threshold_abs=0.2, num_peaks=no_grasp)
+    local_max = peak_local_max(q_img, min_distance=20, threshold_abs=0.2, num_peaks=no_grasp) # min distance is too heuristic
     
     grasps = []
     for grasp_point_array in local_max:
